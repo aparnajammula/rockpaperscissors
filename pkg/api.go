@@ -1,4 +1,4 @@
-package main
+package pkg
 
 import (
 	"encoding/json"
@@ -15,8 +15,9 @@ type Response struct {
 	Result string `json:"result"`
 }
 
-func main() {
+func StartServer() {
 	http.HandleFunc("/play", playHandler)
+	http.Handle("/", http.FileServer(http.Dir("./static")))
 	fmt.Println("Server is running on port 8080")
 	http.ListenAndServe(":8080", nil)
 }
@@ -33,6 +34,6 @@ func playHandler(w http.ResponseWriter, r *http.Request) {
 	player2 := conversion(req.Player2)
 	comparision := Comparision(player1, player2)
 	res.Result = comparision
-	//w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(res)
 }

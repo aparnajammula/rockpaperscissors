@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rock Paper Scissors</title>
+</head>
+<body>
+<h1>Rock Paper Scissors Game</h1>
+<form id="gameForm">
+    <label for="player1">Player 1:</label>
+    <input type="text" id="player1" name="player1" required>
+    <label for="player2">Player 2:</label>
+    <input type="text" id="player2" name="player2" required>
+    <button type="submit">Play</button>
+</form>
+<div id="result"></div>
+
+<script>
+    document.getElementById('gameForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const player1 = document.getElementById('player1').value;
+        const player2 = document.getElementById('player2').value;
+
+        fetch('http://localhost:8080/play', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ player1: player1, player2: player2 })
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = 'Result: ' + data.result;
+                document.querySelector('button[type="submit"]').innerText = 'Replay';
+            })
+            .then(() => {
+                document.getElementById('player1').value = '';
+                document.getElementById('player2').value = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+</body>
+</html>
